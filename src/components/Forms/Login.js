@@ -1,7 +1,11 @@
 import React, { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+import { loginUserAction } from "../../redux/slice/users/userSlice";
 
 const Login = () => {
+  const dispatch = useDispatch();
+  const { loading, userAuth } = useSelector(state => state.users);
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -9,15 +13,17 @@ const Login = () => {
   //---Destructuring---
   const { email, password } = formData;
   //---onchange handler----
-  const onChangeHandler = (e) => {
+  const onChangeHandler = e => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
-
   //---onsubmit handler----
-  const onSubmitHandler = (e) => {
+  const onSubmitHandler = e => {
     e.preventDefault();
-    console.log(formData);
+    dispatch(loginUserAction(formData));
   };
+  if (userAuth?.userInfo?.status === "success") {
+    window.location.href = "/dashboard";
+  }
   return (
     <>
       <section className="relative py-16 bg-gray-50">
@@ -28,8 +34,11 @@ const Login = () => {
               <h4 className="max-w-xs font-heading text-3xl sm:text-4xl mt-2">
                 Login
               </h4>
+              <h2 className="text-red-500 text-center">
+                {userAuth?.error?.message}
+              </h2>
             </div>
-            <form action>
+            <form onSubmit={onSubmitHandler}>
               <div className="mb-4">
                 <label className="block text-sm leading-6 mb-2" htmlFor>
                   E-mail address
@@ -59,9 +68,10 @@ const Login = () => {
               <div className="text-right mb-6">
                 <button
                   className="block w-full py-4 px-6 text-center font-heading font-medium text-base text-white bg-green-500 hover:bg-green-600 border border-green-500 hover:border-green-600 rounded-sm transition duration-200"
-                  type="submit"
+                  style={{ background: loading ? "grey" : "" }}
+                  disabled={loading}
                 >
-                  Sign in
+                  {loading ? "loading..." : "Sign in"}
                 </button>
               </div>
               <Link

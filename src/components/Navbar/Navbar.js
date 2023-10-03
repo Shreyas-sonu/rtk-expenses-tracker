@@ -3,8 +3,21 @@ import { Bars3Icon, BellIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { PlusIcon } from "@heroicons/react/20/solid";
 import { Link } from "react-router-dom";
 import logo from "../../assets/logo.png";
+import { useSelector, useDispatch } from "react-redux";
+import { logOutUserAction } from "../../redux/slice/users/userSlice";
 
 export default function Navbar() {
+  const { userInfo } = useSelector(state => state?.users?.userAuth);
+  const isLogin = userInfo?.token ? true : false;
+  const dispatch = useDispatch();
+
+  // //logout
+  const logoutHandler = () => {
+    dispatch(logOutUserAction());
+    //redirect
+    window.location.href = "/login";
+  };
+
   return (
     <Disclosure as="nav" className="bg-gray-800">
       {({ open }) => (
@@ -36,29 +49,39 @@ export default function Navbar() {
                   />
                 </Link>
                 <div className="hidden md:ml-6 md:flex md:items-center md:space-x-4">
-                  <Link
-                    to="/register"
-                    className="text-gray-300 cursor-pointer pt-1 pb-1 pr-3 pl-3 hover:bg-gray-700 hover:text-white">
-                    Register
-                  </Link>
+                  {!isLogin && (
+                    <>
+                      <Link
+                        to="/register"
+                        className="text-gray-300 cursor-pointer pt-1 pb-1 pr-3 pl-3 hover:bg-gray-700 hover:text-white"
+                      >
+                        Register
+                      </Link>
 
-                  <Link
-                    to="/login"
-                    className="text-gray-300 cursor-pointer pt-1 pb-1 pr-3 pl-3 hover:bg-gray-700 hover:text-white">
-                    Login
-                  </Link>
+                      <Link
+                        to="/login"
+                        className="text-gray-300 cursor-pointer pt-1 pb-1 pr-3 pl-3 hover:bg-gray-700 hover:text-white"
+                      >
+                        Login
+                      </Link>
+                    </>
+                  )}
 
                   <Link
                     to="/about"
-                    className="text-gray-300 cursor-pointer pt-1 pb-1 pr-3 pl-3 hover:bg-gray-700 hover:text-white">
+                    className="text-gray-300 cursor-pointer pt-1 pb-1 pr-3 pl-3 hover:bg-gray-700 hover:text-white"
+                  >
                     About
                   </Link>
                   {/* Authenticated */}
-                  <Link
-                    to="/dashboard"
-                    className="text-gray-300 cursor-pointer pt-1 pb-1 pr-3 pl-3 hover:bg-gray-700 hover:text-white">
-                    Dashboard
-                  </Link>
+                  {isLogin && (
+                    <Link
+                      to="/dashboard"
+                      className="text-gray-300 cursor-pointer pt-1 pb-1 pr-3 pl-3 hover:bg-gray-700 hover:text-white"
+                    >
+                      Dashboard
+                    </Link>
+                  )}
                 </div>
               </div>
               <div className="flex items-center">
@@ -75,71 +98,87 @@ export default function Navbar() {
                 </div> */}
 
                 <div className="flex-shrink-0">
-                  <button
-                    type="button"
-                    className="relative inline-flex items-center rounded-md border border-transparent bg-green-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-800 mr-3">
+                  <Link
+                    to="/add-account"
+                    className="relative inline-flex items-center rounded-md border border-transparent bg-green-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-800 mr-3"
+                  >
                     <PlusIcon
                       className="-ml-1 mr-2 h-5 w-5"
                       aria-hidden="true"
                     />
                     <span>New Project</span>
-                  </button>
+                  </Link>
                 </div>
 
-                <div className="flex-shrink-0">
-                  <button
-                    type="button"
-                    className="relative inline-flex items-center rounded-md border border-transparent bg-red-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-800">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      strokeWidth={1.5}
-                      stroke="currentColor"
-                      className="w-6 h-6">
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75"
-                      />
-                    </svg>
+                {isLogin && (
+                  <div className="flex-shrink-0">
+                    <button
+                      onClick={logoutHandler}
+                      type="button"
+                      className="relative inline-flex items-center rounded-md border border-transparent bg-red-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-800"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth={1.5}
+                        stroke="currentColor"
+                        className="w-6 h-6"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75"
+                        />
+                      </svg>
 
-                    <span>Logout</span>
-                  </button>
-                </div>
+                      <span>Logout</span>
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
           </div>
 
           <Disclosure.Panel className="md:hidden">
-            <div className="space-y-1 px-2 w-full pt-2 pb-3 sm:px-3">
-              <Link
-                to="/register"
-                className="text-gray-300 cursor-pointer pt-1 pb-1 pr-3 pl-3 hover:bg-gray-700 hover:text-white">
-                Register
-              </Link>
-            </div>
-            <div className="space-y-1 px-2 w-full pt-2 pb-3 sm:px-3">
-              <Link
-                to="/login"
-                className="text-gray-300 cursor-pointer pt-1 pb-1 pr-3 pl-3 hover:bg-gray-700 hover:text-white">
-                Login
-              </Link>
-            </div>
+            {!isLogin && (
+              <>
+                <div className="space-y-1 px-2 w-full pt-2 pb-3 sm:px-3">
+                  <Link
+                    to="/register"
+                    className="text-gray-300 cursor-pointer pt-1 pb-1 pr-3 pl-3 hover:bg-gray-700 hover:text-white"
+                  >
+                    Register
+                  </Link>
+                </div>
+                <div className="space-y-1 px-2 w-full pt-2 pb-3 sm:px-3">
+                  <Link
+                    to="/login"
+                    className="text-gray-300 cursor-pointer pt-1 pb-1 pr-3 pl-3 hover:bg-gray-700 hover:text-white"
+                  >
+                    Login
+                  </Link>
+                </div>
+              </>
+            )}
             <div className="space-y-1 px-2 w-full pt-2 pb-3 sm:px-3">
               <Link
                 to="/about"
-                className="text-gray-300 cursor-pointer pt-1 pb-1 pr-3 pl-3 hover:bg-gray-700 hover:text-white">
+                className="text-gray-300 cursor-pointer pt-1 pb-1 pr-3 pl-3 hover:bg-gray-700 hover:text-white"
+              >
                 About
               </Link>
             </div>
             <div className="space-y-1 px-2 w-full pt-2 pb-3 sm:px-3">
               {/* Authenticated */}
-              <Link
-                to="/dashboard"
-                className="text-gray-300 cursor-pointer pt-1 pb-1 pr-3 pl-3 hover:bg-gray-700 hover:text-white">
-                Dashboard
-              </Link>
+              {isLogin && (
+                <Link
+                  to="/dashboard"
+                  className="text-gray-300 cursor-pointer pt-1 pb-1 pr-3 pl-3 hover:bg-gray-700 hover:text-white"
+                >
+                  Dashboard
+                </Link>
+              )}
             </div>
           </Disclosure.Panel>
         </>
