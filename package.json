@@ -1,5 +1,5 @@
 {
-  "name": "task-manager-app",
+  "name": "rtk-expenses-tracker",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
